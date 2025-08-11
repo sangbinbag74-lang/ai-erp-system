@@ -3,21 +3,28 @@
   "builds": [
     {
       "src": "frontend/package.json",  
-      "use": "@vercel/static"
+      "use": "@vercel/static",
+      "config": {
+        "buildCommand": "cd frontend && npm install && npm run build"  
+      }
     },
     {
       "src": "backend/manage.py",  
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "buildCommand": "pip install -r requirements.txt && python backend/manage.py migrate"  
+      }
     }
   ],
-  "routes": [
+  "routes": [  
     {
-      "src": "/api/(.*)",  
+      "src": "/api/(.*)",
       "dest": "backend/manage.py"
     },
     {
-      "src": "/(.*)",  
+      "src": "/(.*)",
       "dest": "/frontend/dist/$1"
     }
-  ]
+  ],
+  "outputDirectory": "frontend/dist"
 }
