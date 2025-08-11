@@ -1,0 +1,110 @@
+Docstring,Original Text,Translated Text
+DocType: AI File Manager,AI File Manager,AI 파일 관리자
+DocType: Team Management,Team Management,팀 관리
+DocType: Cloud Storage,Cloud Storage,클라우드 스토리지
+DocType: LLM Config,LLM Config,LLM 설정
+DocType: File Analysis,File Analysis,파일 분석
+
+# AI File Manager
+label: File Name,File Name,파일명
+label: File Type,File Type,파일 형태
+label: File Path,File Path,파일 경로
+label: Upload Date,Upload Date,업로드 날짜
+label: File Size,File Size,파일 크기
+label: Description,Description,설명
+label: Tags,Tags,태그
+label: Analysis Status,Analysis Status,분석 상태
+label: Analysis Result,Analysis Result,분석 결과
+label: LLM Response,LLM Response,LLM 응답
+
+# Team Management
+label: Team Name,Team Name,팀명
+label: Team Lead,Team Lead,팀장
+label: Members,Members,멤버
+label: Department,Department,부서
+label: Team Description,Team Description,팀 설명
+label: Created Date,Created Date,생성일
+label: Status,Status,상태
+
+# Cloud Storage
+label: Storage Provider,Storage Provider,저장소 제공자
+label: Bucket Name,Bucket Name,버킷명
+label: Access Key,Access Key,접근 키
+label: Secret Key,Secret Key,비밀 키
+label: Region,Region,지역
+label: Endpoint,Endpoint,엔드포인트
+label: Is Default,Is Default,기본 설정
+
+# LLM Config
+label: Provider,Provider,제공자
+label: Model Name,Model Name,모델명
+label: API Key,API Key,API 키
+label: Base URL,Base URL,기본 URL
+label: Max Tokens,Max Tokens,최대 토큰
+label: Temperature,Temperature,온도
+label: Is Active,Is Active,활성화
+
+# File Analysis
+label: File Reference,File Reference,파일 참조
+label: Analysis Type,Analysis Type,분석 유형
+label: Query,Query,질의
+label: Response,Response,응답
+label: Tokens Used,Tokens Used,사용된 토큰
+label: Analysis Date,Analysis Date,분석일
+
+# Messages
+message: File uploaded successfully,File uploaded successfully,파일이 성공적으로 업로드되었습니다
+message: Analysis completed,Analysis completed,분석이 완료되었습니다
+message: LLM configuration saved,LLM configuration saved,LLM 설정이 저장되었습니다
+message: Team created successfully,Team created successfully,팀이 성공적으로 생성되었습니다
+message: Cloud storage configured,Cloud storage configured,클라우드 저장소가 설정되었습니다
+message: File deleted successfully,File deleted successfully,파일이 성공적으로 삭제되었습니다
+message: Analysis failed,Analysis failed,분석에 실패했습니다
+message: Invalid file type,Invalid file type,올바르지 않은 파일 형태입니다
+message: File size too large,File size too large,파일 크기가 너무 큽니다
+message: Access denied,Access denied,접근이 거부되었습니다
+
+# Buttons
+button: Upload File,Upload File,파일 업로드
+button: Analyze,Analyze,분석하기
+button: Download,Download,다운로드
+button: Delete,Delete,삭제
+button: Edit,Edit,편집
+button: Save,Save,저장
+button: Cancel,Cancel,취소
+button: Submit,Submit,제출
+button: Configure,Configure,설정
+
+# Navigation
+nav: Dashboard,Dashboard,대시보드
+nav: File Management,File Management,파일 관리
+nav: Team Management,Team Management,팀 관리
+nav: Cloud Storage,Cloud Storage,클라우드 저장소
+nav: LLM Settings,LLM Settings,LLM 설정
+nav: Analytics,Analytics,분석
+nav: Reports,Reports,리포트
+nav: Settings,Settings,설정
+
+# Status
+status: Active,Active,활성
+status: Inactive,Inactive,비활성
+status: Pending,Pending,대기중
+status: Completed,Completed,완료
+status: Failed,Failed,실패
+status: Processing,Processing,처리중
+
+# Common
+common: Yes,Yes,예
+common: No,No,아니오
+common: All,All,전체
+common: None,None,없음
+common: Search,Search,검색
+common: Filter,Filter,필터
+common: Sort,Sort,정렬
+common: Refresh,Refresh,새로고침
+common: Close,Close,닫기
+common: Open,Open,열기
+common: View,View,보기
+common: Print,Print,인쇄
+common: Export,Export,내보내기
+common: Import,Import,가져오기
