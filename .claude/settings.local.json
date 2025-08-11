@@ -6,7 +6,10 @@
       "Bash(python:*)",
       "Bash(git init:*)",
       "Bash(git config:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git rm:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git branch:*)"
     ],
     "deny": []
   }
