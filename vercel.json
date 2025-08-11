@@ -2,21 +2,21 @@
   "version": 2,
   "builds": [
     {
-      "src": "frontend/package.json",  // 프론트엔드 빌드 설정. Vercel이 Vue를 자동 인식.
+      "src": "frontend/package.json",  
       "use": "@vercel/static"
     },
     {
-      "src": "backend/manage.py",  // 백엔드 빌드. Python 앱으로 취급.
+      "src": "backend/manage.py",  
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",  // 모든 /api/ 요청을 백엔드로 라우팅.
+      "src": "/api/(.*)",  
       "dest": "backend/manage.py"
     },
     {
-      "src": "/(.*)",  // 나머지 요청(프론트)은 Static Site로.
+      "src": "/(.*)",  
       "dest": "/frontend/dist/$1"
     }
   ]
