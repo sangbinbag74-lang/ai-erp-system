@@ -4,7 +4,8 @@ Context Manager for AI ERP System
 Manages conversation context, user session data, and intelligent caching
 for enhanced AI interactions across the ERP system.
 """
-
+import os
+os.environ.setdefault('FRAPPE_SETTINGS_MODULE', 'backend.settings')  # settings.py 로드 (Frappe 스타일)
 import json
 import redis
 import hashlib

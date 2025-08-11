@@ -232,3 +232,4 @@ site_config.json
 
 # ERPNext submodule (handled separately)
 erpnext/
+.vercel
