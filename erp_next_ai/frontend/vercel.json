@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "erpnext-ai-frontend",
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
@@ -8,19 +7,13 @@
   "devCommand": "npm run dev",
   "public": false,
   "env": {
-    "VITE_API_URL": "@erpnext-ai-api-url"
+    "VITE_API_URL": "https://ai-erp-system-production.up.railway.app"
   },
   "build": {
     "env": {
-      "VITE_API_URL": "@erpnext-ai-api-url"
+      "VITE_API_URL": "https://ai-erp-system-production.up.railway.app"
     }
   },
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "https://erpnext-ai-backend.railway.app/api/$1"
-    }
-  ],
   "rewrites": [
     {
       "source": "/((?!api/).*)",
@@ -63,11 +56,6 @@
       ]
     }
   ],
-  "functions": {
-    "app/api/*.js": {
-      "maxDuration": 30
-    }
-  },
   "regions": ["icn1"],
   "github": {
     "autoAlias": false
