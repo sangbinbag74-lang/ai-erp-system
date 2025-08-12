@@ -34,7 +34,10 @@
       "Bash(start https://vercel.com/dashboard)",
       "Bash(railway status:*)",
       "Bash(start https://platform.openai.com)",
-      "Bash(start https://ai-erp-system-production.up.railway.app/docs)"
+      "Bash(start https://ai-erp-system-production.up.railway.app/docs)",
+      "Bash(cp:*)",
+      "Bash(find:*)",
+      "Bash(true)"
     ],
     "deny": []
   }
