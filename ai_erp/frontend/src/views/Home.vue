@@ -51,21 +51,30 @@ export default {
     const testApi = async () => {
       try {
         apiStatus.value = 'pending'
-        apiMessage.value = '⏳ API 연결 테스트 중...'
         
         // API URL from environment variable
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-        const response = await fetch(`${apiUrl}/api/health`)
+        apiMessage.value = `⏳ API 연결 테스트 중... (${apiUrl})`
+        
+        const response = await fetch(`${apiUrl}/api/health`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
         
         if (response.ok) {
+          const data = await response.json()
           apiStatus.value = 'success'
           apiMessage.value = '✅ API 연결 성공!'
+          console.log('API Response:', data)
         } else {
-          throw new Error('API 응답 오류')
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
         }
       } catch (error) {
         apiStatus.value = 'error'
-        apiMessage.value = '❌ API 연결 실패 (Backend 설정 필요)'
+        apiMessage.value = `❌ API 연결 실패: ${error.message}`
+        console.error('API Error:', error)
       }
     }
     

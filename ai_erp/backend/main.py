@@ -23,16 +23,23 @@ app = FastAPI(
 )
 
 # CORS 설정
+# CORS 설정 - 모든 Vercel 도메인 허용
+allowed_origins = [
+    "https://ai-erp-system-f1c4bb20b-park-sangbins-projects.vercel.app",
+    "https://ai-erp-system-g48e3mayq-park-sangbins-projects.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:5173"
+]
+
+# 개발 환경에서는 모든 origin 허용
+if os.getenv("ENVIRONMENT") == "development":
+    allowed_origins.append("*")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://ai-erp-system-g48e3mayq-park-sangbins-projects.vercel.app",
-        "https://*.vercel.app",
-        "http://localhost:3000",
-        "http://localhost:5173"
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 

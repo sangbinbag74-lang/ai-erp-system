@@ -19,7 +19,9 @@
       "Bash(vercel:*)",
       "Bash(railway login:*)",
       "Bash(del Dockerfile)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "WebFetch(domain:ai-erp-system-production.up.railway.app)",
+      "WebFetch(domain:ai-erp-system-f1c4bb20b-park-sangbins-projects.vercel.app)"
     ],
     "deny": []
   }
