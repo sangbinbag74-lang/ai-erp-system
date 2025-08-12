@@ -5,7 +5,7 @@ ERPNext AI System - FastAPI 메인 애플리케이션
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from contextlib import asynccontextmanager
 
 # Core imports
@@ -41,7 +41,10 @@ app = FastAPI(
     title="ERPNext AI System",
     description="AI 기반 ERP 시스템 - ERPNext의 모든 기능을 구현한 차세대 ERP",
     version=settings.APP_VERSION,
-    lifespan=lifespan
+    lifespan=lifespan,
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json"
 )
 
 # CORS 설정
@@ -226,6 +229,20 @@ async def test_anthropic():
         return {"status": "error", "message": "Anthropic API 키가 설정되지 않았습니다."}
     
     return {"status": "success", "message": "Anthropic API 키가 설정되었습니다."}
+
+
+# 간단한 테스트 페이지
+@app.get("/test")
+async def test_page():
+    """테스트 페이지"""
+    return {"message": "ERPNext AI System 테스트 성공!", "status": "OK", "timestamp": "2024"}
+
+
+# 문서 리디렉션 (혹시 문제가 있을 경우 대비)
+@app.get("/documentation")
+async def documentation_redirect():
+    """문서 페이지로 리디렉션"""
+    return RedirectResponse(url="/docs")
 
 
 # DocType 임시 API들 (기본 CRUD)

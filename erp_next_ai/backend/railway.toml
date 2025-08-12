@@ -1,6 +1,5 @@
 [build]
-builder = "DOCKERFILE"
-dockerfilePath = "Dockerfile"
+builder = "dockerfile"
 
 [deploy]
 healthcheckPath = "/api/health"
@@ -8,20 +7,8 @@ healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
 
-[[services]]
-name = "erpnext-ai-backend"
-
-[services.source]
-type = "local"
-
-[services.variables]
+[variables]
 PYTHONUNBUFFERED = "1"
 ENVIRONMENT = "production"
+DEBUG = "false"
 LOG_LEVEL = "info"
-
-# 데이터베이스 URL은 Railway에서 자동 제공
-# DATABASE_URL = "${{ Postgres.DATABASE_URL }}"
-
-# AI API 키들은 Railway 환경변수로 설정
-# OPENAI_API_KEY = "${{ OPENAI_API_KEY }}"
-# ANTHROPIC_API_KEY = "${{ ANTHROPIC_API_KEY }}"
