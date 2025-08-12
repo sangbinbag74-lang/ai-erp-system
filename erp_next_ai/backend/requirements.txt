@@ -1,19 +1,2 @@
-# 필수 웹 프레임워크
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-
-# 기본 데이터베이스
-sqlalchemy==2.0.23
-psycopg2-binary==2.9.9
-
-# 설정 관리
-pydantic==2.5.0
-pydantic-settings==2.1.0
-python-dotenv==1.0.0
-
-# AI API (선택적)
-openai==1.3.8
-anthropic==0.7.7
-
-# 유틸리티
-httpx==0.25.2
