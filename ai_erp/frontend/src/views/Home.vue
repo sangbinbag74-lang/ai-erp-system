@@ -33,6 +33,7 @@
       
       <div class="actions">
         <button @click="testApi" class="btn-primary">API 테스트</button>
+        <router-link to="/dashboard" class="btn-primary">🚀 ERP 시스템 시작</router-link>
         <router-link to="/about" class="btn-secondary">시스템 정보</router-link>
       </div>
     </div>

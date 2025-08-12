@@ -1,8 +1,18 @@
 <template>
   <div id="app">
     <header class="header">
-      <h1>🤖 AI ERP System</h1>
-      <p>한국어 지원 AI 기반 ERP 시스템</p>
+      <div class="header-content">
+        <router-link to="/" class="logo">
+          <h1>🤖 AI ERP System</h1>
+        </router-link>
+        <nav class="nav">
+          <router-link to="/dashboard" class="nav-link">📊 대시보드</router-link>
+          <router-link to="/sales" class="nav-link">💼 매출관리</router-link>
+          <router-link to="/inventory" class="nav-link">📦 재고관리</router-link>
+          <router-link to="/hr" class="nav-link">👥 인사관리</router-link>
+          <router-link to="/analytics" class="nav-link">🤖 AI분석</router-link>
+        </nav>
+      </div>
     </header>
     
     <main class="main">
@@ -10,7 +20,7 @@
     </main>
     
     <footer class="footer">
-      <p>&copy; 2024 AI ERP System. Powered by Vue.js & Vercel</p>
+      <p>&copy; 2024 AI ERP System. Powered by Vue.js & Railway & Vercel</p>
     </footer>
   </div>
 </template>
@@ -34,18 +44,49 @@ export default {
 .header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 2rem;
-  text-align: center;
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.header h1 {
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  text-decoration: none;
+  color: white;
+}
+
+.logo h1 {
   margin: 0;
-  font-size: 2.5rem;
+  font-size: 1.8rem;
 }
 
-.header p {
-  margin: 0.5rem 0 0 0;
-  opacity: 0.9;
+.nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.nav-link.router-link-active {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .main {
