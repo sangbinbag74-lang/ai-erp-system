@@ -6,10 +6,6 @@ import App from './App.vue'
 
 // Styles
 import './assets/css/main.css'
-import 'frappe-ui/style.css'
-
-// Frappe UI
-import { FrappeUI } from 'frappe-ui'
 
 // Create Vue app
 const app = createApp(App)
@@ -18,7 +14,6 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(createHead())
 app.use(router)
-app.use(FrappeUI)
 
 // Global error handler
 app.config.errorHandler = (err, vm, info) => {
