@@ -5,7 +5,7 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "devCommand": "npm run dev",
-  "public": false,
+  "public": true,
   "env": {
     "VITE_API_URL": "https://ai-erp-system-production.up.railway.app"
   },
