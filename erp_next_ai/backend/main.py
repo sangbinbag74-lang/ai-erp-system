@@ -20,15 +20,15 @@ async def lifespan(app: FastAPI):
     print("🚀 ERPNext AI System 시작 중...")
     
     try:
-        # 데이터베이스 초기화
+        # 데이터베이스 초기화 시도
+        print("🔄 데이터베이스 연결 시도 중...")
         init_database()
         print("✅ 데이터베이스 초기화 완료")
         
     except Exception as e:
-        print(f"❌ 초기화 실패: {e}")
-        # 프로덕션에서는 에러가 발생해도 서비스를 시작하도록 함
-        if not settings.ENVIRONMENT == "production":
-            raise
+        print(f"⚠️ 데이터베이스 초기화 실패: {e}")
+        print("📝 데이터베이스 없이 서비스 시작 (환경변수 설정 후 연결됩니다)")
+        # 데이터베이스 없이도 서비스 시작
     
     yield  # 애플리케이션 실행
     
