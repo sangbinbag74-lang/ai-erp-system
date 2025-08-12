@@ -54,13 +54,24 @@ export default {
         
         // API URL from environment variable
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+        
+        // 환경변수 확인
+        if (!import.meta.env.VITE_API_URL) {
+          apiStatus.value = 'error'
+          apiMessage.value = '❌ VITE_API_URL 환경변수가 설정되지 않음'
+          return
+        }
+        
         apiMessage.value = `⏳ API 연결 테스트 중... (${apiUrl})`
         
         const response = await fetch(`${apiUrl}/api/health`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
           },
+          mode: 'cors',
+          cache: 'no-cache',
         })
         
         if (response.ok) {
