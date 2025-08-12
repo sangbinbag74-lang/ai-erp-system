@@ -57,7 +57,7 @@
 /* 기본 스타일 재설정 */
 @layer base {
   * {
-    @apply border-border;
+    @apply border-gray-200;
   }
   
   body {
