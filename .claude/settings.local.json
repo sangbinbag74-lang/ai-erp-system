@@ -43,7 +43,9 @@
       "Bash(pip install:*)",
       "WebFetch(domain:localhost)",
       "Bash(railway deploy:*)",
-      "Bash(railway link:*)"
+      "Bash(railway link:*)",
+      "Bash(railway projects:*)",
+      "Bash(railway:*)"
     ],
     "deny": []
   }
