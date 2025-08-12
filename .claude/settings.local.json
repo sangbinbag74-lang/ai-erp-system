@@ -37,7 +37,13 @@
       "Bash(start https://ai-erp-system-production.up.railway.app/docs)",
       "Bash(cp:*)",
       "Bash(find:*)",
-      "Bash(true)"
+      "Bash(true)",
+      "WebFetch(domain:docs.railway.app)",
+      "WebFetch(domain:docs.railway.com)",
+      "Bash(pip install:*)",
+      "WebFetch(domain:localhost)",
+      "Bash(railway deploy:*)",
+      "Bash(railway link:*)"
     ],
     "deny": []
   }
