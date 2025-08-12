@@ -2,7 +2,7 @@
  * AI 기능을 사용하기 위한 Vue Composable
  * ERPNext AI Copilot과 통신하는 모든 기능을 제공
  */
-import { ref, reactive } from 'vue'
+import { ref, reactive, readonly } from 'vue'
 import axios from 'axios'
 
 // AI 서비스 상태

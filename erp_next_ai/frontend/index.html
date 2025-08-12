@@ -48,9 +48,8 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
     
-    <!-- 보안 헤더 -->
+    <!-- 보안 헤더 (X-Frame-Options는 서버에서 설정) -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     
@@ -167,44 +166,22 @@
     <!-- 메인 스크립트 -->
     <script type="module" src="/src/main.js"></script>
     
-    <!-- 서비스 워커 등록 (프로덕션에서만) -->
+    <!-- 앱 로딩 완료 표시 -->
     <script>
-      if ('serviceWorker' in navigator && import.meta.env.PROD) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js')
-            .then(function(registration) {
-              console.log('SW registered: ', registration);
-            })
-            .catch(function(registrationError) {
-              console.log('SW registration failed: ', registrationError);
-            });
-        });
-      }
-    </script>
-    
-    <!-- 글로벌 오류 처리 -->
-    <script>
-      window.addEventListener('error', function(e) {
-        console.error('Global error:', e.error);
-        // 프로덕션에서는 오류 리포팅 서비스로 전송
-        if (import.meta.env.PROD && window.Sentry) {
-          Sentry.captureException(e.error);
-        }
-      });
-      
-      window.addEventListener('unhandledrejection', function(e) {
-        console.error('Unhandled promise rejection:', e.reason);
-        // 프로덕션에서는 오류 리포팅 서비스로 전송
-        if (import.meta.env.PROD && window.Sentry) {
-          Sentry.captureException(e.reason);
-        }
-      });
-      
       // 앱 로딩 완료 표시
       window.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
           document.body.classList.add('app-loaded');
         }, 1000);
+      });
+      
+      // 글로벌 오류 처리
+      window.addEventListener('error', function(e) {
+        console.error('Global error:', e.error);
+      });
+      
+      window.addEventListener('unhandledrejection', function(e) {
+        console.error('Unhandled promise rejection:', e.reason);
       });
     </script>
   </body>
