@@ -1,0 +1,23 @@
+name: ai-erp-backend
+services:
+- name: backend
+  source_dir: ai_erp/backend
+  github:
+    repo: your-username/ai-erp-test
+    branch: main
+  run_command: bench start
+  environment_slug: python
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  envs:
+  - key: FRAPPE_ENV
+    value: production
+  - key: REDIS_URL
+    scope: RUN_AND_BUILD_TIME
+databases:
+- name: mysql-db
+  engine: MYSQL
+  version: "8"
+- name: redis-cache
+  engine: REDIS
+  version: "7"
