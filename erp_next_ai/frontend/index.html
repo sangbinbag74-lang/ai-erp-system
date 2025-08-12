@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- 기본 메타 태그 -->
+    <title>ERPNext AI System - AI 기반 차세대 ERP</title>
+    <meta name="description" content="ERPNext의 모든 기능을 구현한 AI 중심의 차세대 ERP 시스템. 자율적 업무 처리, 파일 관리, 예측 분석 기능을 제공합니다." />
+    <meta name="keywords" content="ERP, AI, ERPNext, 회계, 영업, 재고관리, 인사관리, 프로젝트관리" />
+    <meta name="author" content="ERPNext AI Team" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="ERPNext AI System - AI 기반 차세대 ERP" />
+    <meta property="og:description" content="ERPNext의 모든 기능을 구현한 AI 중심의 차세대 ERP 시스템" />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:url" content="https://erpnext-ai.vercel.app" />
+    <meta property="og:site_name" content="ERPNext AI System" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ERPNext AI System - AI 기반 차세대 ERP" />
+    <meta name="twitter:description" content="ERPNext의 모든 기능을 구현한 AI 중심의 차세대 ERP 시스템" />
+    <meta name="twitter:image" content="/twitter-image.png" />
+    
+    <!-- 추가 메타 태그 -->
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="theme-color" content="#3b82f6" />
+    <meta name="msapplication-TileColor" content="#3b82f6" />
+    
+    <!-- Apple 메타 태그 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="ERPNext AI" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    
+    <!-- 프리로드 중요 리소스 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    
+    <!-- 보안 헤더 -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    
+    <!-- 성능 최적화 -->
+    <link rel="dns-prefetch" href="//api.erpnext-ai.com" />
+    <link rel="preconnect" href="https://api.erpnext-ai.com" />
+    
+    <!-- 스타일 시트 (폴백용) -->
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" />
+    </noscript>
+    
+    <!-- 초기 CSS (FOUC 방지) -->
+    <style>
+      /* 초기 로딩 스타일 */
+      #app {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background-color: #f8fafc;
+        min-height: 100vh;
+      }
+      
+      /* 로딩 스피너 */
+      .initial-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+      
+      .loader-content {
+        text-align: center;
+      }
+      
+      .loader-icon {
+        width: 48px;
+        height: 48px;
+        border: 3px solid #e2e8f0;
+        border-top: 3px solid #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+      }
+      
+      .loader-text {
+        color: #64748b;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      /* 다크모드 초기 지원 */
+      @media (prefers-color-scheme: dark) {
+        #app {
+          background-color: #1e293b;
+          color: #f1f5f9;
+        }
+        
+        .initial-loader {
+          background-color: #1e293b;
+        }
+        
+        .loader-text {
+          color: #cbd5e1;
+        }
+      }
+      
+      /* 접근성 - 애니메이션 감소 */
+      @media (prefers-reduced-motion: reduce) {
+        .loader-icon {
+          animation: none;
+          border-top-color: transparent;
+        }
+      }
+      
+      /* 로딩 완료 후 숨김 */
+      .app-loaded .initial-loader {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 초기 로딩 화면 -->
+    <div class="initial-loader">
+      <div class="loader-content">
+        <div class="loader-icon"></div>
+        <div class="loader-text">ERPNext AI System 로딩 중...</div>
+      </div>
+    </div>
+    
+    <!-- 메인 앱 컨테이너 -->
+    <div id="app"></div>
+    
+    <!-- NoScript 폴백 -->
+    <noscript>
+      <div style="text-align: center; padding: 2rem; font-family: system-ui, sans-serif;">
+        <h1>JavaScript가 필요합니다</h1>
+        <p>ERPNext AI System을 사용하려면 JavaScript를 활성화해 주세요.</p>
+        <p>JavaScript를 활성화한 후 페이지를 새로고침하세요.</p>
+      </div>
+    </noscript>
+    
+    <!-- 메인 스크립트 -->
+    <script type="module" src="/src/main.js"></script>
+    
+    <!-- 서비스 워커 등록 (프로덕션에서만) -->
+    <script>
+      if ('serviceWorker' in navigator && import.meta.env.PROD) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+              console.log('SW registered: ', registration);
+            })
+            .catch(function(registrationError) {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
+    
+    <!-- 글로벌 오류 처리 -->
+    <script>
+      window.addEventListener('error', function(e) {
+        console.error('Global error:', e.error);
+        // 프로덕션에서는 오류 리포팅 서비스로 전송
+        if (import.meta.env.PROD && window.Sentry) {
+          Sentry.captureException(e.error);
+        }
+      });
+      
+      window.addEventListener('unhandledrejection', function(e) {
+        console.error('Unhandled promise rejection:', e.reason);
+        // 프로덕션에서는 오류 리포팅 서비스로 전송
+        if (import.meta.env.PROD && window.Sentry) {
+          Sentry.captureException(e.reason);
+        }
+      });
+      
+      // 앱 로딩 완료 표시
+      window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+          document.body.classList.add('app-loaded');
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>
