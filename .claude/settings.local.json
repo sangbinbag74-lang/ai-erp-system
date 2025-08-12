@@ -21,7 +21,20 @@
       "Bash(del Dockerfile)",
       "Bash(rm:*)",
       "WebFetch(domain:ai-erp-system-production.up.railway.app)",
-      "WebFetch(domain:ai-erp-system-f1c4bb20b-park-sangbins-projects.vercel.app)"
+      "WebFetch(domain:ai-erp-system-f1c4bb20b-park-sangbins-projects.vercel.app)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.erpnext.com)",
+      "WebFetch(domain:docs.frappe.io)",
+      "WebFetch(domain:frappeframework.com)",
+      "Bash(railway --version)",
+      "Bash(deploy.bat)",
+      "Bash(start https://railway.app/dashboard)",
+      "Bash(start https://github.com/sangbinbag74-lang/ai-erp-system)",
+      "Bash(start https://console.anthropic.com/settings/keys)",
+      "Bash(start https://vercel.com/dashboard)",
+      "Bash(railway status:*)",
+      "Bash(start https://platform.openai.com)",
+      "Bash(start https://ai-erp-system-production.up.railway.app/docs)"
     ],
     "deny": []
   }
