@@ -46,7 +46,8 @@
       "Bash(railway link:*)",
       "Bash(railway projects:*)",
       "Bash(railway:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(curl:*)"
     ],
     "deny": []
   }

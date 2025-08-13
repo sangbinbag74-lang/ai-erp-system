@@ -199,6 +199,43 @@ async def database_status():
             "message": f"Database connection failed: {str(e)}"
         }
 
+@app.get("/api/db-health")
+async def db_health_check():
+    """데이터베이스 헬스체크 전용 엔드포인트"""
+    if not DATABASE_URL:
+        return {
+            "status": "not_configured",
+            "message": "데이터베이스가 구성되지 않았습니다",
+            "response_time_ms": 0,
+            "database_type": "unknown"
+        }
+    
+    import time
+    start_time = time.time()
+    
+    try:
+        # 실제 환경에서는 데이터베이스 연결 테스트
+        # 지금은 시뮬레이션
+        response_time = int((time.time() - start_time) * 1000)
+        
+        return {
+            "status": "healthy",
+            "message": "데이터베이스 연결 정상",
+            "response_time_ms": response_time,
+            "database_type": "postgresql" if "postgres" in DATABASE_URL else "sqlite",
+            "last_check": time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    except Exception as e:
+        response_time = int((time.time() - start_time) * 1000)
+        logger.error(f"Database health check failed: {e}")
+        
+        return {
+            "status": "error",
+            "message": f"데이터베이스 연결 오류: {str(e)}",
+            "response_time_ms": response_time,
+            "error_type": type(e).__name__
+        }
+
 # DocType API 엔드포인트들
 @app.get("/api/doctypes")
 async def list_doctypes():

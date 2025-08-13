@@ -243,11 +243,15 @@
         </div>
       </div>
     </div>
+
+    <!-- AI 어시스턴트 -->
+    <AIAssistant context="자산 관리" />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import AIAssistant from '@/components/AIAssistant.vue'
 
 const editAssets = ref(false)
 const editDepreciation = ref(false)

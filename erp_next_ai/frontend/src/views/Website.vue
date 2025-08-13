@@ -295,11 +295,15 @@
         </div>
       </div>
     </div>
+
+    <!-- AI 어시스턴트 -->
+    <AIAssistant context="웹사이트 관리" />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import AIAssistant from '@/components/AIAssistant.vue'
 
 const editPages = ref(false)
 const editSEO = ref(false)

@@ -1,1526 +1,398 @@
 <template>
-  <div class="accounts-module">
-    <!-- 모듈 헤더 -->
-    <div class="module-header">
-      <div class="header-content">
-        <div class="module-title">
-          <Icon name="heroicons:calculator" class="w-8 h-8 text-ai-primary" />
-          <div>
-            <h1>회계 관리</h1>
-            <p>AI 기반 자동 회계 처리 및 재무 분석</p>
-          </div>
+  <div class="accounts min-h-screen bg-white">
+    <!-- 헤더 -->
+    <div class="bg-white border-b border-gray-200 p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">회계 관리</h1>
+          <p class="text-gray-600">재무 제표, 계정 관리 및 회계 자동화</p>
         </div>
-        <div class="header-actions">
-          <button @click="openAIAssistant" class="ai-assist-btn">
-            <Icon name="heroicons:sparkles" class="w-5 h-5" />
-            AI 회계 어시스턴트
-          </button>
-          <button @click="generateReport" class="generate-btn">
-            <Icon name="heroicons:document-chart-bar" class="w-5 h-5" />
-            보고서 생성
-          </button>
-        </div>
-      </div>
-      
-      <!-- AI 실시간 인사이트 바 -->
-      <div class="ai-insights-bar">
-        <div class="insight-item" v-for="insight in realtimeInsights" :key="insight.id">
-          <Icon :name="insight.icon" class="w-5 h-5" :class="insight.color" />
-          <span>{{ insight.text }}</span>
-          <button @click="exploreInsight(insight)" class="explore-btn">
-            <Icon name="heroicons:arrow-top-right-on-square" class="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- AI 자연어 명령 영역 -->
-    <div class="ai-command-section">
-      <div class="command-container">
-        <Icon name="heroicons:cpu-chip" class="w-6 h-6 text-ai-primary" />
-        <textarea
-          v-model="aiCommand"
-          @keydown.enter.ctrl="executeAccountsAI"
-          placeholder="회계 관련 자연어 명령... 예: '이번 달 손익계산서를 생성하고 주요 변동사항을 분석해줘'"
-          class="ai-command-input"
-          rows="2"
-        ></textarea>
-        <button 
-          @click="executeAccountsAI"
-          :disabled="!aiCommand.trim() || processing"
-          class="ai-execute-btn"
-        >
-          <Icon v-if="processing" name="heroicons:arrow-path" class="w-5 h-5 animate-spin" />
-          <Icon v-else name="heroicons:play" class="w-5 h-5" />
-        </button>
-      </div>
-    </div>
-
-    <!-- 대시보드 카드들 -->
-    <div class="dashboard-cards">
-      <!-- 재무 현황 카드 -->
-      <div class="card financial-overview">
-        <div class="card-header">
-          <h3>재무 현황</h3>
-          <div class="card-actions">
-            <button @click="refreshFinancials" class="refresh-btn">
-              <Icon name="heroicons:arrow-path" class="w-4 h-4" />
-            </button>
-            <button @click="analyzeFinancials" class="analyze-btn">
-              <Icon name="heroicons:sparkles" class="w-4 h-4" />
-              AI 분석
-            </button>
-          </div>
-        </div>
-        
-        <div class="financial-metrics">
-          <div class="metric">
-            <div class="metric-label">총 자산</div>
-            <div class="metric-value">{{ formatCurrency(financialData.totalAssets) }}</div>
-            <div class="metric-change" :class="financialData.assetChange >= 0 ? 'positive' : 'negative'">
-              <Icon :name="financialData.assetChange >= 0 ? 'heroicons:arrow-trending-up' : 'heroicons:arrow-trending-down'" class="w-4 h-4" />
-              {{ Math.abs(financialData.assetChange) }}%
-            </div>
-          </div>
-          
-          <div class="metric">
-            <div class="metric-label">총 부채</div>
-            <div class="metric-value">{{ formatCurrency(financialData.totalLiabilities) }}</div>
-            <div class="metric-change" :class="financialData.liabilityChange <= 0 ? 'positive' : 'negative'">
-              <Icon :name="financialData.liabilityChange <= 0 ? 'heroicons:arrow-trending-down' : 'heroicons:arrow-trending-up'" class="w-4 h-4" />
-              {{ Math.abs(financialData.liabilityChange) }}%
-            </div>
-          </div>
-          
-          <div class="metric">
-            <div class="metric-label">자본</div>
-            <div class="metric-value">{{ formatCurrency(financialData.equity) }}</div>
-            <div class="metric-change" :class="financialData.equityChange >= 0 ? 'positive' : 'negative'">
-              <Icon :name="financialData.equityChange >= 0 ? 'heroicons:arrow-trending-up' : 'heroicons:arrow-trending-down'" class="w-4 h-4" />
-              {{ Math.abs(financialData.equityChange) }}%
-            </div>
-          </div>
-          
-          <div class="metric">
-            <div class="metric-label">순이익</div>
-            <div class="metric-value">{{ formatCurrency(financialData.netIncome) }}</div>
-            <div class="metric-change" :class="financialData.incomeChange >= 0 ? 'positive' : 'negative'">
-              <Icon :name="financialData.incomeChange >= 0 ? 'heroicons:arrow-trending-up' : 'heroicons:arrow-trending-down'" class="w-4 h-4" />
-              {{ Math.abs(financialData.incomeChange) }}%
-            </div>
-          </div>
-        </div>
-        
-        <div class="ai-financial-insights">
-          <h4>AI 재무 분석</h4>
-          <div class="insights-list">
-            <div v-for="insight in financialInsights" :key="insight.id" class="insight-item">
-              <Icon :name="insight.type === 'warning' ? 'heroicons:exclamation-triangle' : 'heroicons:lightbulb'" 
-                    class="w-4 h-4" 
-                    :class="insight.type === 'warning' ? 'text-ai-warning' : 'text-ai-success'" />
-              <span>{{ insight.text }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 현금 흐름 카드 -->
-      <div class="card cash-flow">
-        <div class="card-header">
-          <h3>현금 흐름</h3>
-          <div class="period-selector">
-            <select v-model="selectedPeriod" @change="updateCashFlow">
-              <option value="week">이번 주</option>
-              <option value="month">이번 달</option>
-              <option value="quarter">이번 분기</option>
-              <option value="year">올해</option>
-            </select>
-          </div>
-        </div>
-        
-        <div class="cash-flow-chart">
-          <canvas ref="cashFlowChart" width="400" height="200"></canvas>
-        </div>
-        
-        <div class="cash-flow-summary">
-          <div class="flow-item inflow">
-            <Icon name="heroicons:arrow-down-circle" class="w-5 h-5 text-ai-success" />
-            <div>
-              <div class="flow-label">현금 유입</div>
-              <div class="flow-amount">{{ formatCurrency(cashFlowData.inflow) }}</div>
-            </div>
-          </div>
-          
-          <div class="flow-item outflow">
-            <Icon name="heroicons:arrow-up-circle" class="w-5 h-5 text-ai-error" />
-            <div>
-              <div class="flow-label">현금 유출</div>
-              <div class="flow-amount">{{ formatCurrency(cashFlowData.outflow) }}</div>
-            </div>
-          </div>
-          
-          <div class="flow-item net">
-            <Icon name="heroicons:equals" class="w-5 h-5 text-ai-primary" />
-            <div>
-              <div class="flow-label">순 현금 흐름</div>
-              <div class="flow-amount" :class="cashFlowData.net >= 0 ? 'positive' : 'negative'">
-                {{ formatCurrency(cashFlowData.net) }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 미수금/미지급금 카드 -->
-      <div class="card receivables-payables">
-        <div class="card-header">
-          <h3>미수금 · 미지급금</h3>
-          <button @click="optimizeCollections" class="optimize-btn">
-            <Icon name="heroicons:sparkles" class="w-4 h-4" />
-            AI 최적화
-          </button>
-        </div>
-        
-        <div class="ap-ar-summary">
-          <div class="ar-section">
-            <h4>미수금 (A/R)</h4>
-            <div class="amount-display">
-              <span class="amount">{{ formatCurrency(arData.total) }}</span>
-              <span class="count">({{ arData.count }}건)</span>
-            </div>
-            <div class="aging-breakdown">
-              <div class="aging-item" v-for="aging in arData.aging" :key="aging.period">
-                <span class="period">{{ aging.period }}</span>
-                <span class="amount">{{ formatCurrency(aging.amount) }}</span>
-                <div class="progress-bar">
-                  <div class="progress-fill" :style="{ width: aging.percentage + '%' }"></div>
-                </div>
-              </div>
-            </div>
-            <div class="ai-suggestions">
-              <h5>AI 수금 제안</h5>
-              <ul>
-                <li v-for="suggestion in arSuggestions" :key="suggestion.id">
-                  <Icon name="heroicons:lightbulb" class="w-4 h-4 text-ai-warning" />
-                  {{ suggestion.text }}
-                  <button @click="implementSuggestion(suggestion)" class="implement-btn">실행</button>
-                </li>
-              </ul>
-            </div>
-          </div>
-          
-          <div class="ap-section">
-            <h4>미지급금 (A/P)</h4>
-            <div class="amount-display">
-              <span class="amount">{{ formatCurrency(apData.total) }}</span>
-              <span class="count">({{ apData.count }}건)</span>
-            </div>
-            <div class="aging-breakdown">
-              <div class="aging-item" v-for="aging in apData.aging" :key="aging.period">
-                <span class="period">{{ aging.period }}</span>
-                <span class="amount">{{ formatCurrency(aging.amount) }}</span>
-                <div class="progress-bar">
-                  <div class="progress-fill" :style="{ width: aging.percentage + '%' }"></div>
-                </div>
-              </div>
-            </div>
-            <div class="payment-schedule">
-              <h5>AI 결제 계획</h5>
-              <div class="schedule-list">
-                <div v-for="payment in paymentSchedule" :key="payment.id" class="schedule-item">
-                  <div class="payment-date">{{ formatDate(payment.date) }}</div>
-                  <div class="payment-amount">{{ formatCurrency(payment.amount) }}</div>
-                  <div class="payment-priority" :class="payment.priority">{{ payment.priority }}</div>
-                  <button @click="schedulePayment(payment)" class="schedule-btn">예약</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 계정 과목 관리 -->
-    <div class="chart-of-accounts">
-      <div class="section-header">
-        <h2>계정 과목</h2>
-        <div class="section-actions">
-          <button @click="addAccount" class="add-btn">
-            <Icon name="heroicons:plus" class="w-4 h-4" />
-            계정 추가
-          </button>
-          <button @click="importAccounts" class="import-btn">
-            <Icon name="heroicons:arrow-down-tray" class="w-4 h-4" />
-            일괄 가져오기
-          </button>
-          <button @click="analyzeAccounts" class="analyze-btn">
-            <Icon name="heroicons:sparkles" class="w-4 h-4" />
-            AI 분석
-          </button>
-        </div>
-      </div>
-      
-      <div class="accounts-tree">
-        <div v-for="accountGroup in accountsTree" :key="accountGroup.id" class="account-group">
-          <div class="group-header" @click="toggleGroup(accountGroup.id)">
-            <Icon :name="accountGroup.expanded ? 'heroicons:minus' : 'heroicons:plus'" class="w-4 h-4" />
-            <Icon :name="accountGroup.icon" class="w-5 h-5" />
-            <span class="group-name">{{ accountGroup.name }}</span>
-            <span class="group-balance">{{ formatCurrency(accountGroup.balance) }}</span>
-            <div class="ai-health-indicator" :class="accountGroup.aiHealth">
-              <Icon name="heroicons:circle" class="w-3 h-3" />
-            </div>
-          </div>
-          
-          <div v-if="accountGroup.expanded" class="group-accounts">
-            <div v-for="account in accountGroup.accounts" :key="account.id" class="account-item">
-              <div class="account-info">
-                <span class="account-code">{{ account.code }}</span>
-                <span class="account-name">{{ account.name }}</span>
-                <span class="account-type">{{ account.type }}</span>
-              </div>
-              <div class="account-balance">{{ formatCurrency(account.balance) }}</div>
-              <div class="account-actions">
-                <button @click="viewAccount(account)" class="view-btn">
-                  <Icon name="heroicons:eye" class="w-4 h-4" />
-                </button>
-                <button @click="editAccount(account)" class="edit-btn">
-                  <Icon name="heroicons:pencil" class="w-4 h-4" />
-                </button>
-                <button @click="analyzeAccount(account)" class="ai-analyze-btn">
-                  <Icon name="heroicons:sparkles" class="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 거래 내역 -->
-    <div class="transactions-section">
-      <div class="section-header">
-        <h2>최근 거래</h2>
-        <div class="transaction-filters">
-          <input 
-            v-model="transactionSearch" 
-            type="text" 
-            placeholder="거래 검색..." 
-            class="search-input"
+        <div class="flex space-x-3">
+          <button 
+            @click="editMode = !editMode" 
+            class="px-4 py-2 text-sm font-medium rounded-md border"
+            :class="editMode ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'"
           >
-          <select v-model="transactionFilter" class="filter-select">
-            <option value="all">모든 거래</option>
-            <option value="income">수입</option>
-            <option value="expense">지출</option>
-            <option value="transfer">이체</option>
-          </select>
-          <button @click="createTransaction" class="create-btn">
-            <Icon name="heroicons:plus" class="w-4 h-4" />
-            거래 생성
+            {{ editMode ? '편집 완료' : '편집 모드' }}
+          </button>
+          <button class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700">
+            새 거래 등록
           </button>
         </div>
       </div>
-      
-      <div class="transactions-table">
-        <div class="table-header">
-          <div class="col-date">날짜</div>
-          <div class="col-description">설명</div>
-          <div class="col-account">계정</div>
-          <div class="col-amount">금액</div>
-          <div class="col-status">상태</div>
-          <div class="col-actions">작업</div>
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="p-6">
+      <!-- 재무 현황 카드 -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-500">총 자산</p>
+              <p class="text-2xl font-bold text-gray-900" :contenteditable="editMode">₩12.5B</p>
+            </div>
+            <div class="p-3 bg-blue-50 rounded-full">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            </div>
+          </div>
+          <div class="mt-4 flex items-center text-sm">
+            <span class="text-green-500 font-medium" :contenteditable="editMode">+8.2%</span>
+            <span class="text-gray-500 ml-2">전월 대비</span>
+          </div>
         </div>
-        
-        <div class="table-body">
-          <div v-for="transaction in filteredTransactions" :key="transaction.id" class="transaction-row">
-            <div class="col-date">{{ formatDate(transaction.date) }}</div>
-            <div class="col-description">
-              <div class="transaction-desc">{{ transaction.description }}</div>
-              <div v-if="transaction.aiGenerated" class="ai-badge">AI 생성</div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-500">총 부채</p>
+              <p class="text-2xl font-bold text-gray-900" :contenteditable="editMode">₩3.8B</p>
             </div>
-            <div class="col-account">{{ transaction.account }}</div>
-            <div class="col-amount" :class="transaction.type">
-              {{ formatCurrency(transaction.amount) }}
+            <div class="p-3 bg-red-50 rounded-full">
+              <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
             </div>
-            <div class="col-status">
-              <span class="status-badge" :class="transaction.status">{{ transaction.status }}</span>
+          </div>
+          <div class="mt-4 flex items-center text-sm">
+            <span class="text-red-500 font-medium" :contenteditable="editMode">+2.1%</span>
+            <span class="text-gray-500 ml-2">증가</span>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-500">당기순이익</p>
+              <p class="text-2xl font-bold text-gray-900" :contenteditable="editMode">₩2.1B</p>
             </div>
-            <div class="col-actions">
-              <button @click="editTransaction(transaction)" class="edit-btn">
-                <Icon name="heroicons:pencil" class="w-4 h-4" />
+            <div class="p-3 bg-green-50 rounded-full">
+              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+            </div>
+          </div>
+          <div class="mt-4 flex items-center text-sm">
+            <span class="text-green-500 font-medium" :contenteditable="editMode">+15.7%</span>
+            <span class="text-gray-500 ml-2">개선</span>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-500">현금흐름</p>
+              <p class="text-2xl font-bold text-gray-900" :contenteditable="editMode">₩850M</p>
+            </div>
+            <div class="p-3 bg-purple-50 rounded-full">
+              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+              </svg>
+            </div>
+          </div>
+          <div class="mt-4 flex items-center text-sm">
+            <span class="text-green-500 font-medium" :contenteditable="editMode">+5.3%</span>
+            <span class="text-gray-500 ml-2">양호</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 메인 콘텐츠 그리드 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- 최근 거래 내역 -->
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">최근 거래 내역</h3>
+            <div class="flex space-x-2">
+              <button 
+                @click="editTransactions = !editTransactions" 
+                class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                {{ editTransactions ? '저장' : '수정' }}
               </button>
-              <button @click="duplicateTransaction(transaction)" class="duplicate-btn">
-                <Icon name="heroicons:square-2-stack" class="w-4 h-4" />
+              <button class="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200">
+                전체 보기
               </button>
-              <button @click="analyzeTransaction(transaction)" class="analyze-btn">
-                <Icon name="heroicons:sparkles" class="w-4 h-4" />
-              </button>
+            </div>
+          </div>
+          
+          <div class="space-y-4">
+            <div v-for="transaction in transactions" :key="transaction.id" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div class="flex-1">
+                <div class="font-medium text-gray-900" :contenteditable="editTransactions">{{ transaction.description }}</div>
+                <div class="text-sm text-gray-500" :contenteditable="editTransactions">{{ transaction.account }} • {{ transaction.date }}</div>
+              </div>
+              <div class="text-right">
+                <div class="font-medium" :class="transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'" :contenteditable="editTransactions">
+                  {{ transaction.type === 'credit' ? '+' : '-' }}{{ transaction.amount }}
+                </div>
+                <div class="text-sm text-gray-500" :contenteditable="editTransactions">{{ transaction.reference }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 계정별 잔액 -->
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">계정별 잔액</h3>
+            <button 
+              @click="editAccounts = !editAccounts" 
+              class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              {{ editAccounts ? '저장' : '수정' }}
+            </button>
+          </div>
+          
+          <div class="space-y-3">
+            <div v-for="account in accounts" :key="account.id" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div class="flex-1">
+                <div class="font-medium text-gray-900" :contenteditable="editAccounts">{{ account.name }}</div>
+                <div class="text-sm text-gray-500" :contenteditable="editAccounts">{{ account.type }} • {{ account.code }}</div>
+              </div>
+              <div class="text-right">
+                <div class="font-medium text-gray-900" :contenteditable="editAccounts">{{ account.balance }}</div>
+                <div class="text-sm" :class="account.change >= 0 ? 'text-green-500' : 'text-red-500'" :contenteditable="editAccounts">
+                  {{ account.change >= 0 ? '+' : '' }}{{ account.change }}%
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 예산 vs 실적 -->
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">예산 vs 실적</h3>
+            <button 
+              @click="editBudget = !editBudget" 
+              class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              {{ editBudget ? '저장' : '수정' }}
+            </button>
+          </div>
+          
+          <div class="space-y-4">
+            <div v-for="budget in budgetItems" :key="budget.id" class="p-4 bg-gray-50 rounded-lg">
+              <div class="flex justify-between items-center mb-2">
+                <h4 class="font-medium text-gray-900" :contenteditable="editBudget">{{ budget.category }}</h4>
+                <span class="text-sm text-gray-500" :contenteditable="editBudget">{{ budget.period }}</span>
+              </div>
+              <div class="space-y-2">
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600">예산:</span>
+                  <span class="text-gray-900" :contenteditable="editBudget">{{ budget.budgeted }}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600">실적:</span>
+                  <span class="text-gray-900" :contenteditable="editBudget">{{ budget.actual }}</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="h-2 rounded-full" :class="budget.variance >= 0 ? 'bg-green-500' : 'bg-red-500'" :style="{ width: Math.abs(budget.variance) + '%' }"></div>
+                </div>
+                <div class="text-xs text-gray-500">차이: {{ budget.variance >= 0 ? '+' : '-' }}{{ Math.abs(budget.variance) }}%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 세무 신고 현황 -->
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">세무 신고 현황</h3>
+            <button 
+              @click="editTax = !editTax" 
+              class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              {{ editTax ? '저장' : '수정' }}
+            </button>
+          </div>
+          
+          <div class="space-y-3">
+            <div v-for="tax in taxReports" :key="tax.id" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div class="flex-1">
+                <div class="font-medium text-gray-900" :contenteditable="editTax">{{ tax.type }}</div>
+                <div class="text-sm text-gray-600" :contenteditable="editTax">신고기한: {{ tax.dueDate }}</div>
+              </div>
+              <div class="text-right">
+                <span class="px-2 py-1 text-xs font-medium rounded-full" :class="tax.statusClass">
+                  {{ tax.status }}
+                </span>
+                <div class="text-sm text-gray-500 mt-1" :contenteditable="editTax">{{ tax.amount }}</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      
-      <div class="table-pagination">
-        <button @click="previousPage" :disabled="currentPage === 1" class="page-btn">
-          <Icon name="heroicons:chevron-left" class="w-4 h-4" />
-        </button>
-        <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
-        <button @click="nextPage" :disabled="currentPage === totalPages" class="page-btn">
-          <Icon name="heroicons:chevron-right" class="w-4 h-4" />
-        </button>
+
+      <!-- AI 회계 분석 -->
+      <div class="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
+        <div class="flex items-start space-x-3">
+          <div class="p-2 bg-blue-100 rounded-lg">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h4 class="font-semibold text-gray-900 mb-2">AI 재무 인사이트</h4>
+            <div class="space-y-2 text-sm text-gray-700" :contenteditable="editMode">
+              <p>• 매출채권 회전율이 전분기 대비 15% 개선되었습니다. 현금흐름 안정화에 긍정적입니다</p>
+              <p>• 광고비 지출이 예산을 12% 초과했습니다. ROI 검토가 필요합니다</p>
+              <p>• 법인세 추정액이 전년 대비 8% 증가했습니다. 절세 전략을 검토하세요</p>
+              <p>• 재고자산 회전일수가 늘어나고 있습니다. 재고 관리 최적화를 권장합니다</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- AI 어시스턴트 -->
+    <AIAssistant context="회계 관리" />
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
-import { Icon } from '@iconify/vue'
-import { useAI } from '@/composables/useAI'
-import { useNotification } from '@/composables/useNotification'
+import { ref } from 'vue'
+import AIAssistant from '@/components/AIAssistant.vue'
 
-// 반응형 데이터
-const aiCommand = ref('')
-const processing = ref(false)
-const selectedPeriod = ref('month')
-const transactionSearch = ref('')
-const transactionFilter = ref('all')
-const currentPage = ref(1)
-const itemsPerPage = 10
+// 편집 모드 상태
+const editMode = ref(false)
+const editTransactions = ref(false)
+const editAccounts = ref(false)
+const editBudget = ref(false)
+const editTax = ref(false)
 
-// 재무 데이터
-const financialData = ref({
-  totalAssets: 15420000,
-  assetChange: 8.5,
-  totalLiabilities: 8950000,
-  liabilityChange: -2.3,
-  equity: 6470000,
-  equityChange: 12.7,
-  netIncome: 2340000,
-  incomeChange: 15.2
-})
-
-// 현금 흐름 데이터
-const cashFlowData = ref({
-  inflow: 5650000,
-  outflow: 4230000,
-  net: 1420000
-})
-
-// 미수금 데이터
-const arData = ref({
-  total: 3240000,
-  count: 45,
-  aging: [
-    { period: '30일 이내', amount: 1890000, percentage: 58 },
-    { period: '31-60일', amount: 810000, percentage: 25 },
-    { period: '61-90일', amount: 380000, percentage: 12 },
-    { period: '90일 초과', amount: 160000, percentage: 5 }
-  ]
-})
-
-// 미지급금 데이터
-const apData = ref({
-  total: 2180000,
-  count: 32,
-  aging: [
-    { period: '30일 이내', amount: 1520000, percentage: 70 },
-    { period: '31-60일', amount: 480000, percentage: 22 },
-    { period: '61-90일', amount: 150000, percentage: 7 },
-    { period: '90일 초과', amount: 30000, percentage: 1 }
-  ]
-})
-
-// 실시간 AI 인사이트
-const realtimeInsights = ref([
-  {
-    id: 1,
-    text: '현금 흐름이 지난달 대비 15% 개선되었습니다',
-    icon: 'heroicons:arrow-trending-up',
-    color: 'text-ai-success'
-  },
-  {
-    id: 2,
-    text: '90일 초과 미수금이 증가하고 있습니다',
-    icon: 'heroicons:exclamation-triangle',
-    color: 'text-ai-warning'
-  },
-  {
-    id: 3,
-    text: '이번 분기 매출 목표 달성률 112%',
-    icon: 'heroicons:chart-bar',
-    color: 'text-ai-primary'
-  }
-])
-
-// 재무 AI 인사이트
-const financialInsights = ref([
-  {
-    id: 1,
-    type: 'insight',
-    text: '부채비율이 안정적인 수준을 유지하고 있습니다'
-  },
-  {
-    id: 2,
-    type: 'warning',
-    text: '운전자본 회전율이 다소 낮아지고 있어 주의가 필요합니다'
-  },
-  {
-    id: 3,
-    type: 'insight',
-    text: '순이익률이 업계 평균보다 3.2% 높습니다'
-  }
-])
-
-// 계정 과목 트리
-const accountsTree = ref([
-  {
-    id: 1,
-    name: '자산',
-    icon: 'heroicons:building-office',
-    balance: 15420000,
-    aiHealth: 'good',
-    expanded: true,
-    accounts: [
-      { id: 11, code: '1100', name: '현금및현금성자산', type: '유동자산', balance: 2340000 },
-      { id: 12, code: '1200', name: '매출채권', type: '유동자산', balance: 3240000 },
-      { id: 13, code: '1300', name: '재고자산', type: '유동자산', balance: 4580000 },
-      { id: 14, code: '1400', name: '유형자산', type: '비유동자산', balance: 5260000 }
-    ]
-  },
-  {
-    id: 2,
-    name: '부채',
-    icon: 'heroicons:credit-card',
-    balance: 8950000,
-    aiHealth: 'warning',
-    expanded: false,
-    accounts: []
-  },
-  {
-    id: 3,
-    name: '자본',
-    icon: 'heroicons:banknotes',
-    balance: 6470000,
-    aiHealth: 'good',
-    expanded: false,
-    accounts: []
-  },
-  {
-    id: 4,
-    name: '수익',
-    icon: 'heroicons:arrow-trending-up',
-    balance: 12680000,
-    aiHealth: 'excellent',
-    expanded: false,
-    accounts: []
-  },
-  {
-    id: 5,
-    name: '비용',
-    icon: 'heroicons:arrow-trending-down',
-    balance: 10340000,
-    aiHealth: 'good',
-    expanded: false,
-    accounts: []
-  }
-])
-
-// 거래 내역
+// 거래 내역 데이터
 const transactions = ref([
   {
     id: 1,
-    date: new Date(Date.now() - 86400000),
-    description: '제품 판매 - ABC 회사',
+    description: '제품 매출',
     account: '매출',
-    amount: 1500000,
-    type: 'income',
-    status: '완료',
-    aiGenerated: false
+    date: '2024-01-15',
+    type: 'credit',
+    amount: '₩5,250,000',
+    reference: 'INV-001'
   },
   {
     id: 2,
-    date: new Date(Date.now() - 172800000),
     description: '사무용품 구매',
-    account: '사무비',
-    amount: -85000,
-    type: 'expense',
-    status: '완료',
-    aiGenerated: true
+    account: '소모품비',
+    date: '2024-01-14',
+    type: 'debit',
+    amount: '₩150,000',
+    reference: 'PUR-045'
   },
   {
     id: 3,
-    date: new Date(Date.now() - 259200000),
     description: '급여 지급',
-    account: '급여비',
-    amount: -3200000,
-    type: 'expense',
+    account: '급여',
+    date: '2024-01-10',
+    type: 'debit',
+    amount: '₩12,500,000',
+    reference: 'PAY-001'
+  },
+  {
+    id: 4,
+    description: '은행 이자 수입',
+    account: '이자수익',
+    date: '2024-01-08',
+    type: 'credit',
+    amount: '₩45,000',
+    reference: 'INT-001'
+  }
+])
+
+// 계정 잔액 데이터
+const accounts = ref([
+  {
+    id: 1,
+    name: '현금',
+    type: '자산',
+    code: '1001',
+    balance: '₩2,450,000',
+    change: 5.2
+  },
+  {
+    id: 2,
+    name: '매출채권',
+    type: '자산',
+    code: '1201',
+    balance: '₩8,750,000',
+    change: -2.1
+  },
+  {
+    id: 3,
+    name: '매입채무',
+    type: '부채',
+    code: '2001',
+    balance: '₩3,200,000',
+    change: 1.8
+  },
+  {
+    id: 4,
+    name: '미지급금',
+    type: '부채',
+    code: '2101',
+    balance: '₩1,850,000',
+    change: -5.4
+  }
+])
+
+// 예산 데이터
+const budgetItems = ref([
+  {
+    id: 1,
+    category: '매출',
+    period: '2024년 1월',
+    budgeted: '₩50,000,000',
+    actual: '₩52,500,000',
+    variance: 5
+  },
+  {
+    id: 2,
+    category: '마케팅비',
+    period: '2024년 1월',
+    budgeted: '₩3,000,000',
+    actual: '₩3,360,000',
+    variance: -12
+  },
+  {
+    id: 3,
+    category: '인건비',
+    period: '2024년 1월',
+    budgeted: '₩15,000,000',
+    actual: '₩14,750,000',
+    variance: 1.7
+  }
+])
+
+// 세무 신고 데이터
+const taxReports = ref([
+  {
+    id: 1,
+    type: '부가가치세',
+    dueDate: '2024-01-25',
+    status: '준비중',
+    statusClass: 'bg-yellow-100 text-yellow-800',
+    amount: '₩1,250,000'
+  },
+  {
+    id: 2,
+    type: '원천세',
+    dueDate: '2024-01-10',
     status: '완료',
-    aiGenerated: true
-  }
-])
-
-// 컴퓨티드
-const filteredTransactions = computed(() => {
-  let filtered = transactions.value
-
-  if (transactionSearch.value) {
-    const search = transactionSearch.value.toLowerCase()
-    filtered = filtered.filter(t => 
-      t.description.toLowerCase().includes(search) ||
-      t.account.toLowerCase().includes(search)
-    )
-  }
-
-  if (transactionFilter.value !== 'all') {
-    filtered = filtered.filter(t => t.type === transactionFilter.value)
-  }
-
-  return filtered.slice(
-    (currentPage.value - 1) * itemsPerPage,
-    currentPage.value * itemsPerPage
-  )
-})
-
-const totalPages = computed(() => {
-  return Math.ceil(transactions.value.length / itemsPerPage)
-})
-
-// AI 관련 제안들
-const arSuggestions = ref([
-  {
-    id: 1,
-    text: 'ABC 회사에 3일 내 결제 요청 이메일 발송'
+    statusClass: 'bg-green-100 text-green-800',
+    amount: '₩850,000'
   },
   {
-    id: 2,
-    text: '90일 초과 채권에 대해 할인 제안'
+    id: 3,
+    type: '법인세 중간신고',
+    dueDate: '2024-01-31',
+    status: '대기',
+    statusClass: 'bg-gray-100 text-gray-800',
+    amount: '₩5,200,000'
   }
 ])
-
-const paymentSchedule = ref([
-  {
-    id: 1,
-    date: new Date(Date.now() + 86400000 * 3),
-    amount: 850000,
-    priority: 'high'
-  },
-  {
-    id: 2,
-    date: new Date(Date.now() + 86400000 * 7),
-    amount: 1200000,
-    priority: 'medium'
-  }
-])
-
-// 컴포저블
-const { processAIRequest } = useAI()
-const { showNotification } = useNotification()
-
-// 메서드
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('ko-KR', {
-    style: 'currency',
-    currency: 'KRW'
-  }).format(amount)
-}
-
-const formatDate = (date) => {
-  return new Intl.DateTimeFormat('ko-KR', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  }).format(date)
-}
-
-const executeAccountsAI = async () => {
-  if (!aiCommand.value.trim()) return
-  
-  processing.value = true
-  
-  try {
-    const result = await processAIRequest(aiCommand.value, {
-      module: 'accounts',
-      context: 'financial_management'
-    })
-    
-    showNotification('AI 회계 명령이 실행되었습니다.', 'success')
-    aiCommand.value = ''
-    
-  } catch (error) {
-    showNotification('AI 명령 실행 중 오류가 발생했습니다.', 'error')
-  } finally {
-    processing.value = false
-  }
-}
-
-const toggleGroup = (groupId) => {
-  const group = accountsTree.value.find(g => g.id === groupId)
-  if (group) {
-    group.expanded = !group.expanded
-  }
-}
-
-const previousPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--
-  }
-}
-
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++
-  }
-}
-
-// 라이프사이클
-onMounted(() => {
-  // 실시간 데이터 업데이트
-  setInterval(() => {
-    // 실시간 업데이트 로직
-  }, 30000)
-})
 </script>
-
-<style scoped>
-.accounts-module {
-  padding: 2rem;
-  background: var(--bg-primary);
-  min-height: 100vh;
-  color: var(--text-primary);
-}
-
-/* 모듈 헤더 */
-.module-header {
-  margin-bottom: 2rem;
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.module-title {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.module-title h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.module-title p {
-  margin: 0.5rem 0 0 0;
-  color: var(--text-secondary);
-}
-
-.header-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.ai-assist-btn, .generate-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem 1.5rem;
-  border-radius: var(--border-radius);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.ai-assist-btn {
-  background: var(--gradient-primary);
-  border: none;
-  color: white;
-}
-
-.generate-btn {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-primary);
-  color: var(--text-primary);
-}
-
-.ai-assist-btn:hover, .generate-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-/* AI 인사이트 바 */
-.ai-insights-bar {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  background: var(--bg-secondary);
-  border-radius: var(--border-radius);
-  border: 1px solid var(--border-primary);
-  overflow-x: auto;
-}
-
-.ai-insights-bar .insight-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background: var(--bg-tertiary);
-  border-radius: var(--border-radius);
-  white-space: nowrap;
-  min-width: fit-content;
-}
-
-.explore-btn {
-  background: none;
-  border: none;
-  color: var(--ai-primary);
-  cursor: pointer;
-  padding: 0.25rem;
-  border-radius: 4px;
-  transition: background 0.2s;
-}
-
-.explore-btn:hover {
-  background: var(--bg-hover);
-}
-
-/* AI 명령 섹션 */
-.ai-command-section {
-  margin-bottom: 2rem;
-}
-
-.command-container {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
-  background: var(--bg-secondary);
-  border-radius: var(--border-radius-lg);
-  border: 1px solid var(--border-primary);
-}
-
-.ai-command-input {
-  flex: 1;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-secondary);
-  border-radius: var(--border-radius);
-  padding: 1rem;
-  color: var(--text-primary);
-  resize: vertical;
-  min-height: 80px;
-}
-
-.ai-command-input:focus {
-  outline: none;
-  border-color: var(--ai-primary);
-  box-shadow: var(--glow-primary);
-}
-
-.ai-execute-btn {
-  padding: 1rem;
-  background: var(--gradient-primary);
-  border: none;
-  border-radius: var(--border-radius);
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.ai-execute-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--glow-primary);
-}
-
-.ai-execute-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* 대시보드 카드들 */
-.dashboard-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
-}
-
-.card {
-  background: var(--bg-secondary);
-  border-radius: var(--border-radius-lg);
-  padding: 2rem;
-  border: 1px solid var(--border-primary);
-  transition: all 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--ai-primary);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.card-header h3 {
-  margin: 0;
-  font-size: 1.25rem;
-  color: var(--ai-primary);
-}
-
-.card-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.refresh-btn, .analyze-btn, .optimize-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-secondary);
-  border-radius: var(--border-radius);
-  color: var(--text-primary);
-  cursor: pointer;
-  font-size: 0.875rem;
-  transition: all 0.3s ease;
-}
-
-.refresh-btn:hover, .analyze-btn:hover, .optimize-btn:hover {
-  background: var(--ai-primary);
-  color: white;
-}
-
-/* 재무 메트릭 */
-.financial-metrics {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.metric {
-  padding: 1rem;
-  background: var(--bg-tertiary);
-  border-radius: var(--border-radius);
-  text-align: center;
-}
-
-.metric-label {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem;
-}
-
-.metric-value {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-}
-
-.metric-change {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.metric-change.positive {
-  color: var(--ai-success);
-}
-
-.metric-change.negative {
-  color: var(--ai-error);
-}
-
-/* AI 재무 인사이트 */
-.ai-financial-insights h4 {
-  margin: 0 0 1rem 0;
-  color: var(--ai-primary);
-  font-size: 1rem;
-}
-
-.insights-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.insights-list .insight-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  background: var(--bg-elevated);
-  border-radius: var(--border-radius);
-  font-size: 0.875rem;
-}
-
-/* 현금 흐름 */
-.period-selector select {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-secondary);
-  border-radius: var(--border-radius);
-  padding: 0.5rem;
-  color: var(--text-primary);
-}
-
-.cash-flow-chart {
-  margin: 1.5rem 0;
-  padding: 1rem;
-  background: var(--bg-tertiary);
-  border-radius: var(--border-radius);
-}
-
-.cash-flow-summary {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.flow-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex: 1;
-  padding: 1rem;
-  background: var(--bg-tertiary);
-  border-radius: var(--border-radius);
-}
-
-.flow-label {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-
-.flow-amount {
-  font-weight: 600;
-  font-size: 1.125rem;
-}
-
-.flow-amount.positive {
-  color: var(--ai-success);
-}
-
-.flow-amount.negative {
-  color: var(--ai-error);
-}
-
-/* 미수금/미지급금 */
-.ap-ar-summary {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
-
-.ar-section h4, .ap-section h4 {
-  margin: 0 0 1rem 0;
-  color: var(--ai-primary);
-}
-
-.amount-display {
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.amount-display .amount {
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.amount-display .count {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-}
-
-.aging-breakdown {
-  margin-bottom: 1.5rem;
-}
-
-.aging-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border-primary);
-}
-
-.aging-item:last-child {
-  border-bottom: none;
-}
-
-.progress-bar {
-  width: 60px;
-  height: 6px;
-  background: var(--bg-primary);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: var(--gradient-primary);
-  transition: width 0.3s ease;
-}
-
-/* AI 제안 */
-.ai-suggestions h5, .payment-schedule h5 {
-  margin: 0 0 1rem 0;
-  color: var(--ai-accent);
-  font-size: 0.875rem;
-}
-
-.ai-suggestions ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.ai-suggestions li {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  background: var(--bg-elevated);
-  border-radius: var(--border-radius);
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-}
-
-.implement-btn {
-  margin-left: auto;
-  padding: 0.25rem 0.75rem;
-  background: var(--ai-success);
-  border: none;
-  border-radius: 12px;
-  color: white;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.implement-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
-}
-
-/* 결제 일정 */
-.schedule-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.schedule-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem;
-  background: var(--bg-elevated);
-  border-radius: var(--border-radius);
-  font-size: 0.875rem;
-}
-
-.payment-priority {
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.payment-priority.high {
-  background: var(--ai-error);
-  color: white;
-}
-
-.payment-priority.medium {
-  background: var(--ai-warning);
-  color: white;
-}
-
-.payment-priority.low {
-  background: var(--ai-info);
-  color: white;
-}
-
-.schedule-btn {
-  margin-left: auto;
-  padding: 0.25rem 0.75rem;
-  background: var(--ai-primary);
-  border: none;
-  border-radius: 12px;
-  color: white;
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.schedule-btn:hover {
-  transform: translateY(-1px);
-}
-
-/* 계정 과목 관리 */
-.chart-of-accounts, .transactions-section {
-  background: var(--bg-secondary);
-  border-radius: var(--border-radius-lg);
-  padding: 2rem;
-  margin-bottom: 2rem;
-  border: 1px solid var(--border-primary);
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.section-header h2 {
-  margin: 0;
-  color: var(--ai-primary);
-}
-
-.section-actions, .transaction-filters {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.add-btn, .import-btn, .create-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background: var(--ai-primary);
-  border: none;
-  border-radius: var(--border-radius);
-  color: white;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.add-btn:hover, .import-btn:hover, .create-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-/* 계정 트리 */
-.accounts-tree {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.account-group {
-  border: 1px solid var(--border-primary);
-  border-radius: var(--border-radius);
-  overflow: hidden;
-}
-
-.group-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: var(--bg-tertiary);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.group-header:hover {
-  background: var(--bg-elevated);
-}
-
-.group-name {
-  flex: 1;
-  font-weight: 600;
-}
-
-.group-balance {
-  font-weight: 600;
-  color: var(--ai-primary);
-}
-
-.ai-health-indicator {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.ai-health-indicator.excellent {
-  color: var(--ai-success);
-}
-
-.ai-health-indicator.good {
-  color: var(--ai-primary);
-}
-
-.ai-health-indicator.warning {
-  color: var(--ai-warning);
-}
-
-.ai-health-indicator.poor {
-  color: var(--ai-error);
-}
-
-.group-accounts {
-  background: var(--bg-primary);
-}
-
-.account-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.75rem 1rem 0.75rem 3rem;
-  border-bottom: 1px solid var(--border-primary);
-  transition: all 0.3s ease;
-}
-
-.account-item:last-child {
-  border-bottom: none;
-}
-
-.account-item:hover {
-  background: var(--bg-secondary);
-}
-
-.account-info {
-  display: flex;
-  gap: 1rem;
-  flex: 1;
-}
-
-.account-code {
-  font-family: monospace;
-  color: var(--text-secondary);
-  min-width: 60px;
-}
-
-.account-name {
-  flex: 1;
-}
-
-.account-type {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-}
-
-.account-balance {
-  font-weight: 600;
-  color: var(--ai-primary);
-  min-width: 120px;
-  text-align: right;
-}
-
-.account-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.view-btn, .edit-btn, .ai-analyze-btn {
-  padding: 0.5rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-secondary);
-  border-radius: var(--border-radius);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.view-btn:hover, .edit-btn:hover, .ai-analyze-btn:hover {
-  color: var(--ai-primary);
-  border-color: var(--ai-primary);
-}
-
-/* 거래 테이블 */
-.search-input, .filter-select {
-  padding: 0.75rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-secondary);
-  border-radius: var(--border-radius);
-  color: var(--text-primary);
-}
-
-.transactions-table {
-  margin: 1.5rem 0;
-}
-
-.table-header, .transaction-row {
-  display: grid;
-  grid-template-columns: 100px 1fr 120px 120px 80px 120px;
-  gap: 1rem;
-  align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid var(--border-primary);
-}
-
-.table-header {
-  background: var(--bg-tertiary);
-  font-weight: 600;
-  color: var(--text-secondary);
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
-}
-
-.transaction-row {
-  transition: all 0.3s ease;
-}
-
-.transaction-row:hover {
-  background: var(--bg-tertiary);
-}
-
-.transaction-desc {
-  font-weight: 500;
-}
-
-.ai-badge {
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  background: var(--ai-primary);
-  color: white;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  margin-top: 0.25rem;
-}
-
-.col-amount.income {
-  color: var(--ai-success);
-  font-weight: 600;
-}
-
-.col-amount.expense {
-  color: var(--ai-error);
-  font-weight: 600;
-}
-
-.status-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.status-badge.완료 {
-  background: var(--ai-success);
-  color: white;
-}
-
-.status-badge.대기 {
-  background: var(--ai-warning);
-  color: white;
-}
-
-.col-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.edit-btn, .duplicate-btn, .analyze-btn {
-  padding: 0.5rem;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-secondary);
-  border-radius: var(--border-radius);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.edit-btn:hover, .duplicate-btn:hover, .analyze-btn:hover {
-  color: var(--ai-primary);
-  border-color: var(--ai-primary);
-}
-
-/* 페이지네이션 */
-.table-pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
-}
-
-.page-btn {
-  padding: 0.5rem;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-secondary);
-  border-radius: var(--border-radius);
-  color: var(--text-primary);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.page-btn:hover:not(:disabled) {
-  background: var(--ai-primary);
-  color: white;
-}
-
-.page-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.page-info {
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-}
-
-/* 반응형 */
-@media (max-width: 768px) {
-  .accounts-module {
-    padding: 1rem;
-  }
-  
-  .dashboard-cards {
-    grid-template-columns: 1fr;
-  }
-  
-  .financial-metrics {
-    grid-template-columns: 1fr;
-  }
-  
-  .ap-ar-summary {
-    grid-template-columns: 1fr;
-  }
-  
-  .cash-flow-summary {
-    flex-direction: column;
-  }
-  
-  .table-header, .transaction-row {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-  
-  .table-header {
-    display: none;
-  }
-  
-  .transaction-row {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-  }
-}
-</style>

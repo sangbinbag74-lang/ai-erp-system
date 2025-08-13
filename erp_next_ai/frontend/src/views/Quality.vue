@@ -307,11 +307,15 @@
         </div>
       </div>
     </div>
+
+    <!-- AI 어시스턴트 -->
+    <AIAssistant context="품질 관리" />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import AIAssistant from '@/components/AIAssistant.vue'
 
 const editInspections = ref(false)
 const editStandards = ref(false)

@@ -212,11 +212,15 @@
         </div>
       </div>
     </div>
+
+    <!-- AI 어시스턴트 -->
+    <AIAssistant context="제조 관리" />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import AIAssistant from '@/components/AIAssistant.vue'
 
 const editMode = ref(false)
 const editWorkOrders = ref(false)
