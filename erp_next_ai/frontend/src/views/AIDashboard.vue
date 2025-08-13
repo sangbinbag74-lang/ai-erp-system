@@ -3,8 +3,22 @@
     <!-- 상단 헤더 -->
     <header class="top-header">
       <div class="header-left">
-        <div class="logo-placeholder">ERP</div>
-        <h1 class="app-title">ERPNext</h1>
+        <div class="company-logo">
+          <svg class="w-8 h-8" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="url(#logo-gradient)"/>
+            <path d="M8 12h16M8 16h12M8 20h8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#3B82F6"/>
+                <stop offset="100%" style="stop-color:#1E40AF"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="company-info">
+          <h1 class="app-title">TechFlow ERP</h1>
+          <span class="company-subtitle">통합 경영 시스템</span>
+        </div>
       </div>
       
       <div class="header-center">
@@ -69,8 +83,15 @@
         </button>
         
         <div class="profile-dropdown" @click="showProfileMenu = !showProfileMenu">
-          <div class="profile-avatar">관</div>
-          <span class="profile-name">관리자</span>
+          <div class="profile-avatar">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+          </div>
+          <div class="profile-info">
+            <span class="profile-name">김시스템</span>
+            <span class="profile-role">시스템 관리자</span>
+          </div>
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
           </svg>
@@ -949,23 +970,28 @@ export default {
   gap: 12px;
 }
 
-.logo-placeholder {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  border-radius: 8px;
+.company-logo {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
+}
+
+.company-info {
+  display: flex;
+  flex-direction: column;
 }
 
 .app-title {
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
   color: #1e293b;
+  line-height: 1.2;
+}
+
+.company-subtitle {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
 }
 
 .header-center {
@@ -1045,7 +1071,7 @@ export default {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #3b82f6, #1e40af);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1054,10 +1080,22 @@ export default {
   font-weight: 600;
 }
 
+.profile-info {
+  display: flex;
+  flex-direction: column;
+}
+
 .profile-name {
   font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.2;
+}
+
+.profile-role {
+  font-size: 12px;
+  color: #64748b;
   font-weight: 500;
-  color: #374151;
 }
 
 .profile-menu {

@@ -264,79 +264,120 @@ const editAccounts = ref(false)
 const editBudget = ref(false)
 const editTax = ref(false)
 
-// 거래 내역 데이터
+// 거래 내역 데이터 (실제 기업거래 형태)
 const transactions = ref([
   {
     id: 1,
-    description: '제품 매출',
-    account: '매출',
+    description: '삼성전자 반도체 부품 매출',
+    account: '제품매출(41010)',
     date: '2024-01-15',
     type: 'credit',
-    amount: '₩5,250,000',
-    reference: 'INV-001'
+    amount: '₩185,750,000',
+    reference: 'SI-2024-0115'
   },
   {
     id: 2,
-    description: '사무용품 구매',
-    account: '소모품비',
+    description: 'POSCO 철강재료 매입',
+    account: '원재료매입(51010)',
     date: '2024-01-14',
     type: 'debit',
-    amount: '₩150,000',
-    reference: 'PUR-045'
+    amount: '₩95,200,000',
+    reference: 'PI-2024-0114'
   },
   {
     id: 3,
-    description: '급여 지급',
-    account: '급여',
+    description: '1월 급여 및 제수당 지급',
+    account: '급여(52010)',
     date: '2024-01-10',
     type: 'debit',
-    amount: '₩12,500,000',
-    reference: 'PAY-001'
+    amount: '₩248,500,000',
+    reference: 'JE-2024-0010'
   },
   {
     id: 4,
-    description: '은행 이자 수입',
-    account: '이자수익',
+    description: 'KB국민은행 정기예금 이자수입',
+    account: '이자수익(42010)',
     date: '2024-01-08',
     type: 'credit',
-    amount: '₩45,000',
-    reference: 'INT-001'
+    amount: '₩4,450,000',
+    reference: 'JE-2024-0008'
+  },
+  {
+    id: 5,
+    description: 'LG디스플레이 OLED패널 매출',
+    account: '제품매출(41010)',
+    date: '2024-01-05',
+    type: 'credit',
+    amount: '₩267,300,000',
+    reference: 'SI-2024-0105'
   }
 ])
 
-// 계정 잔액 데이터
+// 계정 잔액 데이터 (한국 표준 계정과목 적용)
 const accounts = ref([
   {
     id: 1,
-    name: '현금',
-    type: '자산',
-    code: '1001',
-    balance: '₩2,450,000',
-    change: 5.2
+    name: '현금및현금성자산',
+    type: '유동자산',
+    code: '11010',
+    balance: '₩324,580,000',
+    change: 12.5
   },
   {
     id: 2,
     name: '매출채권',
-    type: '자산',
-    code: '1201',
-    balance: '₩8,750,000',
-    change: -2.1
+    type: '유동자산',
+    code: '11210',
+    balance: '₩487,350,000',
+    change: -8.2
   },
   {
     id: 3,
-    name: '매입채무',
-    type: '부채',
-    code: '2001',
-    balance: '₩3,200,000',
-    change: 1.8
+    name: '재고자산',
+    type: '유동자산',
+    code: '11510',
+    balance: '₩756,780,000',
+    change: 15.3
   },
   {
     id: 4,
-    name: '미지급금',
-    type: '부채',
-    code: '2101',
-    balance: '₩1,850,000',
+    name: '유형자산',
+    type: '비유동자산',
+    code: '12110',
+    balance: '₩2,435,600,000',
+    change: 2.1
+  },
+  {
+    id: 5,
+    name: '매입채무',
+    type: '유동부채',
+    code: '21010',
+    balance: '₩298,750,000',
     change: -5.4
+  },
+  {
+    id: 6,
+    name: '단기차입금',
+    type: '유동부채',
+    code: '21510',
+    balance: '₩450,000,000',
+    change: 0.0
+  },
+  {
+    id: 7,
+    name: '자본금',
+    type: '자본',
+    code: '31010',
+    balance: '₩1,000,000,000',
+    change: 0.0
+  },
+  {
+    id: 8,
+    name: '이익잉여금',
+    type: '자본',
+    code: '32010',
+    balance: '₩2,347,610,000',
+    change: 18.7
   }
 ])
 

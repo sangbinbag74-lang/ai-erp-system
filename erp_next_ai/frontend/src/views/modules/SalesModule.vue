@@ -269,69 +269,86 @@ const editCustomers = ref(false)
 const editPipeline = ref(false)
 const editPerformance = ref(false)
 
-// 최근 주문 데이터
+// 최근 주문 데이터 (실제 기업명)
 const recentOrders = ref([
   {
     id: 1,
-    customer: '(주)테크솔루션',
+    customer: '삼성전자(주)',
     orderNo: 'SO-2024-001',
     date: '2024-01-15',
-    product: 'ERP 시스템 라이선스',
-    amount: '₩25,000,000',
+    product: '반도체 제조장비 부품',
+    amount: '₩425,000,000',
     status: '확정',
     statusClass: 'bg-green-100 text-green-800'
   },
   {
     id: 2,
-    customer: '스마트팩토리',
+    customer: 'LG디스플레이(주)',
     orderNo: 'SO-2024-002',
     date: '2024-01-14',
-    product: '제조관리 모듈',
-    amount: '₩15,500,000',
+    product: 'OLED 패널 소재',
+    amount: '₩315,500,000',
     status: '진행중',
     statusClass: 'bg-blue-100 text-blue-800'
   },
   {
     id: 3,
-    customer: '글로벌커머스',
+    customer: 'SK하이닉스(주)',
     orderNo: 'SO-2024-003',
     date: '2024-01-12',
-    product: '회계시스템',
-    amount: '₩8,200,000',
+    product: '메모리반도체 패키징재',
+    amount: '₩268,200,000',
     status: '검토중',
     statusClass: 'bg-yellow-100 text-yellow-800'
-  }
-])
-
-// 주요 고객 데이터
-const topCustomers = ref([
-  {
-    id: 1,
-    name: '(주)테크솔루션',
-    industry: 'IT서비스',
-    revenue: '₩125M',
-    orders: 15
-  },
-  {
-    id: 2,
-    name: '스마트팩토리',
-    industry: '제조업',
-    revenue: '₩98M',
-    orders: 12
-  },
-  {
-    id: 3,
-    name: '글로벌커머스',
-    industry: '유통업',
-    revenue: '₩85M',
-    orders: 8
   },
   {
     id: 4,
-    name: '디지털이노베이션',
-    industry: 'IT서비스',
-    revenue: '₩72M',
-    orders: 10
+    customer: '현대모비스(주)',
+    orderNo: 'SO-2024-004',
+    date: '2024-01-10',
+    product: '자동차 전자부품',
+    amount: '₩182,800,000',
+    status: '견적단계',
+    statusClass: 'bg-gray-100 text-gray-800'
+  }
+])
+
+// 주요 고객 데이터 (실제 기업명)
+const topCustomers = ref([
+  {
+    id: 1,
+    name: '삼성전자(주)',
+    industry: '반도체/전자',
+    revenue: '₩1,285M',
+    orders: 28
+  },
+  {
+    id: 2,
+    name: 'LG디스플레이(주)',
+    industry: '디스플레이',
+    revenue: '₩1,098M',
+    orders: 22
+  },
+  {
+    id: 3,
+    name: 'SK하이닉스(주)',
+    industry: '메모리반도체',
+    revenue: '₩895M',
+    orders: 18
+  },
+  {
+    id: 4,
+    name: '현대모비스(주)',
+    industry: '자동차부품',
+    revenue: '₩672M',
+    orders: 15
+  },
+  {
+    id: 5,
+    name: 'LG이노텍(주)',
+    industry: '전자부품',
+    revenue: '₩548M',
+    orders: 12
   }
 ])
 
