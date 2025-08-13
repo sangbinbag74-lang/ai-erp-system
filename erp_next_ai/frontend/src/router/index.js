@@ -12,6 +12,10 @@ const HRModule = () => import('@/views/modules/HRModule.vue')
 const ProjectsModule = () => import('@/views/modules/ProjectsModule.vue')
 const CRMModule = () => import('@/views/modules/CRMModule.vue')
 const SupportModule = () => import('@/views/modules/SupportModule.vue')
+const Manufacturing = () => import('@/views/Manufacturing.vue')
+const Assets = () => import('@/views/Assets.vue')
+const Quality = () => import('@/views/Quality.vue')
+const Website = () => import('@/views/Website.vue')
 
 // AI 기능 페이지들
 const AIFileManager = () => import('@/views/ai/AIFileManager.vue')
@@ -119,6 +123,50 @@ const routes = [
       module: 'Support',
       requiresAuth: false,
       icon: 'heroicons:chat-bubble-left-right'
+    }
+  },
+  {
+    path: '/manufacturing',
+    name: 'Manufacturing',
+    component: Manufacturing,
+    meta: { 
+      title: '제조 관리',
+      module: 'Manufacturing',
+      requiresAuth: false,
+      icon: 'heroicons:cog-6-tooth'
+    }
+  },
+  {
+    path: '/assets',
+    name: 'Assets',
+    component: Assets,
+    meta: { 
+      title: '자산 관리',
+      module: 'Assets',
+      requiresAuth: false,
+      icon: 'heroicons:building-office'
+    }
+  },
+  {
+    path: '/quality',
+    name: 'Quality',
+    component: Quality,
+    meta: { 
+      title: '품질 관리',
+      module: 'Quality',
+      requiresAuth: false,
+      icon: 'heroicons:shield-check'
+    }
+  },
+  {
+    path: '/website',
+    name: 'Website',
+    component: Website,
+    meta: { 
+      title: '웹사이트 관리',
+      module: 'Website',
+      requiresAuth: false,
+      icon: 'heroicons:globe-alt'
     }
   },
 
