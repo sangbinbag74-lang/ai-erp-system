@@ -293,7 +293,7 @@
   
   /* 트랜지션 */
   .transition-all {
-    @apply transition-all duration-200 ease-in-out;
+    transition: all 0.2s ease-in-out;
   }
   
   /* 텍스트 생략 */
